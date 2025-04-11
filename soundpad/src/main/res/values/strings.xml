@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Sound Pad</string>
+    <string name="help">Help</string>
+    <string name="play">Play</string>
+    <string name="record">Record</string>
+</resources>
