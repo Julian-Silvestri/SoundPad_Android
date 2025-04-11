@@ -12,4 +12,5 @@
     <color name="buttonColor">#FFA987</color>
     <color name="playSoundButtonColor">#99C24D</color>
     <color name="mainBackgroundColor">#F7EBE8</color>
+    <color name="red">#CA0505</color>
 </resources>
