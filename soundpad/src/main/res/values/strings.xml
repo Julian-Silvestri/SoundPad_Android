@@ -6,5 +6,7 @@
     <string name="stop">Stop</string>
     <string name="recording">Recording</string>
     <string name="contentDescriptionNotAvailable">Content Description Not Available</string>
+    <string name="audio_required_text">This application requires audio permissions to be enabled in order to function.</string>
+    <string name="google_ads_required_text">This app is using personalized ads to bring you a better experience as well as to support development. Please head over to your Android settings for and enable tracking for SoundPad</string>
 
 </resources>

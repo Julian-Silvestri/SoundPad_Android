@@ -1,21 +1,27 @@
 package com.silvestri.soundpad.fragments
 
+import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import com.silvestri.soundpad.R
 import com.silvestri.soundpad.databinding.MainFragmentLayoutBinding
-import java.io.FileOutputStream
+import java.io.File
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
+
 
 class MainFragment: Fragment(R.layout.main_fragment_layout) {
 
     private lateinit var binding: MainFragmentLayoutBinding
+    private lateinit var currentAudioButton: AppCompatButton
+    private var recorder: MediaRecorder? = null
+    private var fileName = ""
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -23,6 +29,7 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
         binding = MainFragmentLayoutBinding.bind(view)
         setupButtons()
         setupViews()
+
     }
 
 
@@ -32,20 +39,32 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun setupButtons(){
+
+        binding.stopRecordingButton.setOnClickListener {
+            stopAudio(currentAudioButton)
+        }
+
         binding.soundOne.setOnClickListener {
             if(binding.soundOne.text == context?.getString(R.string.record)){
                 //record an audio file
-                record(pathName = "soundOne")
+                fileName = "${activity?.externalCacheDir?.absolutePath}/soundOne.3gp"
+                showRecordScreenCountdown(pathName = fileName, button = binding.soundOne)
+
             } else {
                 //play an audio file
+                fileName = "${activity?.externalCacheDir?.absolutePath}/soundOne.3gp"
+                playAudio(pathName = fileName)
             }
         }
         binding.soundTwo.setOnClickListener {
-            if(binding.soundTwo.text == context?.getString(R.string.record)){
-                //record an audio file
-            } else {
-                //play an audio file
-            }
+
+            deleteAudio(fileName)
+//            if(binding.soundTwo.text == context?.getString(R.string.record)){
+//                //record an audio file
+//            } else {
+//                //play an audio file
+//            }
+
         }
         binding.soundThree.setOnClickListener {
             if(binding.soundThree.text == context?.getString(R.string.record)){
@@ -175,53 +194,90 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
         }
     }
 
-    fun saveRecordedAudio(inputStream: InputStream, fileName: String) {
-        val outputStream: OutputStream = FileOutputStream(fileName)
-
-        val buffer = ByteArray(1024)
-        var read: Int
-        var total: Long = 0
-        while (inputStream.read(buffer).also { read = it } != -1) {
-            outputStream.write(buffer, 0, read)
-            total += read.toLong()
-        }
-
-        inputStream.close()
-        outputStream.close()
-    }
 
     @RequiresApi(Build.VERSION_CODES.S)
-    fun record(pathName: String){
-        val recorder = context?.let { MediaRecorder(it) }
-        recorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
-        recorder?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        recorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-        recorder?.setOutputFile(pathName)
-        recorder?.prepare()
-        recorder?.start()   // Recording is now started
-        recorder?.stop()
-        recorder?.reset()   // You can reuse the object by going back to setAudioSource() step
-        recorder?.release()
+    private fun startRecording(pathName: String) {
+        recorder = context?.let {
+            MediaRecorder(it).apply {
+                recorder?.reset()
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                setOutputFile(pathName)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+                try {
+                    prepare()
+                } catch (e: IOException) {
+                    Toast.makeText(context, "Prepare failed => ${e.message}", Toast.LENGTH_SHORT).show()
+                    println("Prepare failed => ${e.message}")
+                }
+
+                start()
+            }
+        }
     }
 
-    fun recordAudio(filePath: String){
-        val mediaRecorder = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            context?.let { MediaRecorder(it) }
-        } else {
-            MediaRecorder()
-        })?.apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setOutputFile(filePath)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-
+    private fun playAudio(pathName: String) {
+        val player = MediaPlayer().apply {
             try {
+                setDataSource(pathName)
                 prepare()
-            } catch (e: IOException) {
 
+            } catch (e: IOException) {
+                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        player.start()
+        player.isLooping = true
+
+    }
+
+    private fun stopAudio(button: AppCompatButton) {
+        recorder?.apply {
+            stop()
+            release()
+        }
+        recorder = null
+        binding.recordingInProgressScreen.visibility = View.GONE
+        binding.mainLayoutGroup.isEnabled = true
+        changeButtonStyleToAudioFilled(button)
+    }
+
+    private fun changeButtonStyleToAudioFilled(button: AppCompatButton) {
+        button.text = context?.getString(R.string.play)
+        context?.getColor(R.color.emeraldGreen)?.let { button.setBackgroundColor(it) }
+    }
+
+    private fun showRecordScreenCountdown(pathName: String, button: AppCompatButton){
+        binding.recordingInProgressScreen.visibility = View.VISIBLE
+        binding.mainLayoutGroup.isEnabled = false
+        startCountdownTimer(pathName = pathName, button = button)
+    }
+
+    private fun startCountdownTimer(pathName: String, button: AppCompatButton){
+        val timer = object: CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.recordingInProgressText.text = "${millisUntilFinished/60}"
             }
 
-            start()
+            @RequiresApi(Build.VERSION_CODES.S)
+            override fun onFinish() {
+                binding.recordingInProgressText.text = context?.getString(R.string.recording)
+                currentAudioButton = button
+                startRecording(pathName)
+            }
+        }
+        timer.start()
+    }
+
+//
+    private fun deleteAudio(pathName: String){
+        val file = File(pathName)
+        if(file.exists()){
+            file.delete()
+        } else {
+            Toast.makeText(context, "Could not delete $pathName", Toast.LENGTH_SHORT).show()
         }
     }
 }
