@@ -563,6 +563,10 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
         binding.stopRecordingButton.setOnClickListener {
             stopAudio(currentAudioButton)
         }
+
+        binding.helpButton.setOnClickListener {
+            view?.findNavController
+        }
     }
 
     private fun changeStyleToAudioPlaying(button: AppCompatButton){

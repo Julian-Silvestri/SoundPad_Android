@@ -6,8 +6,15 @@
     <string name="record">Record</string>
     <string name="stop">Stop</string>
     <string name="recording">Recording</string>
+    <string name="delete_recordings">Delete Recordings</string>
+    <string name="delete_all_recordings">Delete All Recordings</string>
     <string name="contentDescriptionNotAvailable">Content Description Not Available</string>
     <string name="audio_required_text">This application requires audio permissions to be enabled in order to function. Please head over to your Android Settings and enable recording audio permissions for SoundPad</string>
     <string name="google_ads_required_text">This app is using personalized ads to bring you a better experience as well as to support development. Please head over to your Android settings and enable tracking for SoundPad</string>
+    <string name="help_one">1. SoundPad will record up to 20 custom recordings and save them for you.</string>
+    <string name="help_two">2. Deleting the application and re-installing will remove all saved recordings.</string>
+    <string name="help_three">3. If you wish to delete recordings tap the button below. The delete buttons are mapped respectively to each recording box.</string>
+    <string name="help_four">4. Based on user feedback; support for importing custom sounds will be included.</string>
+    <string name="help_five">5. If you are recoding something and you do not hear a playback. Make sure your phone is not on silent and your volume is not muted.</string>
 
 </resources>

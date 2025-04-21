@@ -46,7 +46,7 @@ dependencies {
     implementation(libs.constraint.layout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-//    implementation(libs.room)
+    implementation(libs.navigation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.runner)
     androidTestImplementation(libs.espresso.core)
