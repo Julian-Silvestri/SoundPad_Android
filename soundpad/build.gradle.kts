@@ -48,6 +48,10 @@ android {
 
 dependencies {
 
+    implementation(libs.navigation.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.fragment)
     implementation(libs.appcompat.v7)
     implementation(libs.constraint.layout)
     implementation(libs.androidx.core.ktx)

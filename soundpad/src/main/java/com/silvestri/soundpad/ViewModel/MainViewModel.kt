@@ -1,5 +1,6 @@
 package com.silvestri.soundpad.ViewModel
 
+import android.app.Application
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
@@ -10,12 +11,13 @@ import androidx.appcompat.widget.AppCompatButton
 import java.io.File
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.AndroidViewModel
 import com.silvestri.soundpad.R
 import java.io.IOException
 import kotlin.collections.get
 
 
-class MainViewModel {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init{
         setupSoundFiles()
@@ -66,7 +68,7 @@ class MainViewModel {
     var soundNineteen = ""
     var soundTwenty = ""
 
-    var soundFileActiveCount = ObservableField(0)
+    var currentActiveAudioBtn = ObservableField(0)
     var soundOneText = ObservableField("")
     var soundTwoText = ObservableField("")
     var soundThreeText = ObservableField("")
@@ -139,6 +141,11 @@ class MainViewModel {
     var recordingInProgressVisibility = ObservableField(false)
     var mainLayoutVisibility = ObservableField(false)
 
+    fun getApp(): Application {
+        return getApplication()
+    }
+
+
 
     fun setupSoundFiles(){
         soundFiles = arrayOf(
@@ -168,7 +175,7 @@ class MainViewModel {
     fun soundOneClick(){
         if(soundOneText.get() == recordText.get()){
             //record an audio file
-            showRecordScreenCountdown(pathName = soundFiles[0], button = binding.soundOne)
+            showRecordScreenCountdown(pathName = soundFiles[0], button = 0)
         } else {
             //play an audio file
 //                fileName = "${activity?.externalCacheDir?.absolutePath}/soundOne.3gp"
@@ -182,17 +189,18 @@ class MainViewModel {
         }
     }
 
-    fun showRecordScreenCountdown(){
+    fun showRecordScreenCountdown(pathName: String, button:Int){
         stopAllAudioPlayers()
         disableAllButtons()
         recordingInProgressVisibility.set(true)
         stopRecordingButtonEnabled.set(false)
         mainLayoutVisibility.set(false)
         //TODO: Left off here, 1/29/2026
+        startCountdownTimer(pathName = pathName, button = button)
 
     }
 
-    fun startCountdownTimer(pathName: String, button: AppCompatButton){
+    fun startCountdownTimer(pathName: String, button: Int){
         val timer = object: CountDownTimer(3000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 binding.recordingInProgressText.text = "${millisUntilFinished/60}"
@@ -201,11 +209,34 @@ class MainViewModel {
             @RequiresApi(Build.VERSION_CODES.S)
             override fun onFinish() {
                 binding.recordingInProgressText.text = context?.getString(R.string.recording)
-                currentAudioButton = button
+                currentActiveAudioBtn = button
                 startRecording(pathName)
             }
         }
         timer.start()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun startRecording(pathName: String) {
+        stopRecordingButtonEnabled.set(true)
+        recorder =
+            MediaRecorder(getApp()).apply {
+                recorder?.reset()
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                setOutputFile(pathName)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+                try {
+                    prepare()
+                } catch (e: IOException) {
+                    Toast.makeText(getApp(), "Prepare failed => ${e.message}", Toast.LENGTH_SHORT).show()
+                    println("Prepare failed => ${e.message}")
+                }
+
+                start()
+            }
+
     }
 
     fun disableAllButtons(){
@@ -275,6 +306,129 @@ class MainViewModel {
         stopSoundEighteen()
         stopSoundNineteen()
         stopSoundTwenty()
+
+        val fileOne = File(soundFiles[0])
+        if(fileOne.exists()){
+            changeButtonStyleToAudioFilled(binding.soundOne)
+        }else {
+            changeButtonStyleToRecordAudio(binding.soundOne)
+        }
+
+        val fileTwo = File(soundFiles[1])
+        if(fileTwo.exists()){
+            changeButtonStyleToAudioFilled(binding.soundTwo)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundTwo)
+        }
+        val fileThree = File(soundFiles[2])
+        if(fileThree.exists()){
+            changeButtonStyleToAudioFilled(binding.soundThree)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundThree)
+        }
+        val fileFour = File(soundFiles[3])
+        if(fileFour.exists()){
+            changeButtonStyleToAudioFilled(binding.soundFour)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundFour)
+        }
+        val fileFive = File(soundFiles[4])
+        if(fileFive.exists()){
+            changeButtonStyleToAudioFilled(binding.soundFive)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundFive)
+        }
+        val fileSix = File(soundFiles[5])
+        if(fileSix.exists()){
+            changeButtonStyleToAudioFilled(binding.soundSix)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundSix)
+        }
+        val fileSeven = File(soundFiles[6])
+        if(fileSeven.exists()){
+            changeButtonStyleToAudioFilled(binding.soundSeven)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundSeven)
+        }
+        val fileEight = File(soundFiles[7])
+        if(fileEight.exists()){
+            changeButtonStyleToAudioFilled(binding.soundEight)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundEight)
+        }
+        val fileNine = File(soundFiles[8])
+        if(fileNine.exists()){
+            changeButtonStyleToAudioFilled(binding.soundNine)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundNine)
+        }
+        val fileTen = File(soundFiles[9])
+        if(fileTen.exists()){
+            changeButtonStyleToAudioFilled(binding.soundTen)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundTen)
+        }
+        val fileEleven = File(soundFiles[10])
+        if(fileEleven.exists()){
+            changeButtonStyleToAudioFilled(binding.soundEleven)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundEleven)
+        }
+        val fileTwelve = File(soundFiles[11])
+        if(fileTwelve.exists()){
+            changeButtonStyleToAudioFilled(binding.soundTwelve)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundTwelve)
+        }
+        val fileThirteen = File(soundFiles[12])
+        if(fileThirteen.exists()){
+            changeButtonStyleToAudioFilled(binding.soundThirteen)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundThirteen)
+        }
+        val fileFourteen = File(soundFiles[13])
+        if(fileFourteen.exists()){
+            changeButtonStyleToAudioFilled(binding.soundFourteen)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundFourteen)
+        }
+        val fileFifteen = File(soundFiles[14])
+        if(fileFifteen.exists()){
+            changeButtonStyleToAudioFilled(binding.soundFifteen)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundFifteen)
+        }
+        val fileSixteen = File(soundFiles[15])
+        if(fileSixteen.exists()){
+            changeButtonStyleToAudioFilled(binding.soundSixteen)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundSixteen)
+        }
+        val fileSeventeen = File(soundFiles[16])
+        if(fileSeventeen.exists()){
+            changeButtonStyleToAudioFilled(binding.soundSeventeen)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundSeventeen)
+        }
+        val fileEighteen = File(soundFiles[17])
+        if(fileEighteen.exists()){
+            changeButtonStyleToAudioFilled(binding.soundEighteen)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundEighteen)
+        }
+        val fileNineteen = File(soundFiles[18])
+        if(fileNineteen.exists()){
+            changeButtonStyleToAudioFilled(binding.soundNineteen)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundNineteen)
+        }
+        val fileTwenty = File(soundFiles[19])
+        if(fileTwenty.exists()){
+            changeButtonStyleToAudioFilled(binding.soundTwenty)
+        } else {
+            changeButtonStyleToRecordAudio(binding.soundTwenty)
+        }
+
     }
 
     fun stopSoundOne(){

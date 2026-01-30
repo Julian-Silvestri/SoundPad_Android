@@ -12,6 +12,9 @@ espressoCoreVersion = "3.0.2"
 appcompatV7 = "28.0.0"
 constraint-layoutVersion = "2.0.4"
 navigationVersion = "2.3.4"
+androidxViewModel = "2.7.0"
+androidxActivity = "1.8.2"
+androidxFragment = "1.6.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -26,6 +29,10 @@ appcompat-v7 = { group = "com.android.support", name = "appcompat-v7", version.r
 constraint-layout = { group =  "com.android.support.constraint", name = "constraint-layout" , version.ref = "constraint-layoutVersion"}
 navigation = {group = "androidx.navigation", name="navigation-fragment", version.ref = "navigationVersion" }
 navigation-ui = {group = "androidx.navigation" ,name="navigation-ui", version.ref = "navigationVersion"}
+androidx-lifecycle-viewmodel-ktx = {group = "androidx.lifecycle", name="lifecycle-viewmodel-ktx", version.ref = "androidxViewModel"}
+androidx-activity = {group="androidx.activity", name="activity-ktx", version.ref = "androidxActivity" }
+androidx-fragment = {group = "androidx.fragment", name="fragment-ktx" , version.ref = "androidxFragment"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
