@@ -1,6 +1,6 @@
 package com.silvestri.soundpad.fragments
 
-import android.media.MediaPlayer
+import android.app.Activity
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
@@ -11,61 +11,21 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import com.silvestri.soundpad.R
+import com.silvestri.soundpad.ViewModel.MainViewModel
 import com.silvestri.soundpad.databinding.MainFragmentLayoutBinding
 import java.io.File
 import java.io.IOException
 
-
 class MainFragment: Fragment(R.layout.main_fragment_layout) {
 
-    companion object{
-        var soundOne = ""
-        var soundTwo = ""
-        var soundThree = ""
-        var soundFour = ""
-        var soundFive = ""
-        var soundSix = ""
-        var soundSeven = ""
-        var soundEight = ""
-        var soundNine = ""
-        var soundTen = ""
-        var soundEleven = ""
-        var soundTwelve = ""
-        var soundThirteen = ""
-        var soundFourteen = ""
-        var soundFifteen = ""
-        var soundSixteen = ""
-        var soundSeventeen = ""
-        var soundEighteen = ""
-        var soundNineteen = ""
-        var soundTwenty = ""
-    }
-
     private lateinit var binding: MainFragmentLayoutBinding
+    private var viewModel = MainViewModel()
+    private var whiteColor:Int? = null
+    private var emeraldGreen: Int? = null
+    private var recordText:Int? = null
+    private var playText:Int? = null
+    private var stopText: Int? = null
     private lateinit var currentAudioButton: AppCompatButton
-    private var recorder: MediaRecorder? = null
-    private val playerOne = MediaPlayer()
-    private val playerTwo = MediaPlayer()
-    private val playerThree = MediaPlayer()
-    private val playerFour = MediaPlayer()
-    private val playerFive = MediaPlayer()
-    private val playerSix = MediaPlayer()
-    private val playerSeven = MediaPlayer()
-    private val playerEight = MediaPlayer()
-    private val playerNine = MediaPlayer()
-    private val playerTen = MediaPlayer()
-    private val playerEleven = MediaPlayer()
-    private val playerTwelve = MediaPlayer()
-    private val playerThirteen = MediaPlayer()
-    private val playerFourteen = MediaPlayer()
-    private val playerFifteen = MediaPlayer()
-    private val playerSixteen = MediaPlayer()
-    private val playerSeventeen = MediaPlayer()
-    private val playerEighteen = MediaPlayer()
-    private val playerNineteen = MediaPlayer()
-    private val playerTwenty = MediaPlayer()
-
-    private var soundFiles = emptyArray<String>()
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,58 +33,57 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
         binding = MainFragmentLayoutBinding.bind(view)
         setupButtons()
         setupViews()
-        setupSoundPaths()
-
+        setupSoundPaths(requireActivity())
+        setColorsForUse()
+        setTextValuesForUse()
     }
 
-    private fun setupSoundPaths(){
-        val soundOne = "${activity?.externalCacheDir?.absolutePath}/soundOne.3gp"
-        val soundTwo = "${activity?.externalCacheDir?.absolutePath}/soundTwo.3gp"
-        val soundThree = "${activity?.externalCacheDir?.absolutePath}/soundThree.3gp"
-        val soundFour = "${activity?.externalCacheDir?.absolutePath}/soundFour.3gp"
-        val soundFive = "${activity?.externalCacheDir?.absolutePath}/soundFive.3gp"
-        val soundSix = "${activity?.externalCacheDir?.absolutePath}/soundSix.3gp"
-        val soundSeven = "${activity?.externalCacheDir?.absolutePath}/soundSeven.3gp"
-        val soundEight = "${activity?.externalCacheDir?.absolutePath}/soundEight.3gp"
-        val soundNine = "${activity?.externalCacheDir?.absolutePath}/soundNine.3gp"
-        val soundTen = "${activity?.externalCacheDir?.absolutePath}/soundTen.3gp"
-        val soundEleven = "${activity?.externalCacheDir?.absolutePath}/soundEleven.3gp"
-        val soundTwelve = "${activity?.externalCacheDir?.absolutePath}/soundTwelve.3gp"
-        val soundThirteen = "${activity?.externalCacheDir?.absolutePath}/soundThirteen.3gp"
-        val soundFourteen = "${activity?.externalCacheDir?.absolutePath}/soundFourteen.3gp"
-        val soundFifteen = "${activity?.externalCacheDir?.absolutePath}/soundFifteen.3gp"
-        val soundSixteen = "${activity?.externalCacheDir?.absolutePath}/soundSixteen.3gp"
-        val soundSeventeen = "${activity?.externalCacheDir?.absolutePath}/soundSeventeen.3gp"
-        val soundEighteen = "${activity?.externalCacheDir?.absolutePath}/soundEighteen.3gp"
-        val soundNineteen = "${activity?.externalCacheDir?.absolutePath}/soundNineteen.3gp"
-        val soundTwenty = "${activity?.externalCacheDir?.absolutePath}/soundTwenty.3gp"
-
-        soundFiles = arrayOf(
-            soundOne,
-            soundTwo,
-            soundThree,
-            soundFour,
-            soundFive,
-            soundSix,
-            soundSeven,
-            soundEight,
-            soundNine,
-            soundTen,
-            soundEleven,
-            soundTwelve,
-            soundThirteen,
-            soundFourteen,
-            soundFifteen,
-            soundSixteen,
-            soundSeventeen,
-            soundEighteen,
-            soundNineteen,
-            soundTwenty
-        )
-        setupSoundFiles(soundFiles)
+    private fun setColorsForUse(){
+        whiteColor = R.color.white
+        emeraldGreen = R.color.emeraldGreen
     }
 
-    private fun setupSoundFiles(soundFiles: Array<String>){
+    private fun setTextValuesForUse(){
+        recordText = R.string.record
+        playText = R.string.play
+        stopText = R.string.stop
+        viewModel.playText.set(getStringResIdValue(playText ?: 0))
+        viewModel.recordText.set(getStringResIdValue(recordText ?: 0))
+        viewModel.stopText.set(getStringResIdValue(stopText ?: 0))
+    }
+
+    private fun getStringResIdValue(id: Int): String {
+       return context?.getString(id) ?: ""
+    }
+
+    private fun getColorResIdValue(id: Int): Int {
+        return context?.getColor(id) ?: 0
+    }
+
+    private fun setupSoundPaths(activity: Activity) {
+        viewModel.soundOne = "${activity.externalCacheDir?.absolutePath}/soundOne.3gp"
+        viewModel.soundTwo = "${activity.externalCacheDir?.absolutePath}/soundTwo.3gp"
+        viewModel.soundThree = "${activity.externalCacheDir?.absolutePath}/soundThree.3gp"
+        viewModel.soundFour = "${activity.externalCacheDir?.absolutePath}/soundFour.3gp"
+        viewModel.soundFive = "${activity.externalCacheDir?.absolutePath}/soundFive.3gp"
+        viewModel.soundSix = "${activity.externalCacheDir?.absolutePath}/soundSix.3gp"
+        viewModel.soundSeven = "${activity.externalCacheDir?.absolutePath}/soundSeven.3gp"
+        viewModel.soundEight = "${activity.externalCacheDir?.absolutePath}/soundEight.3gp"
+        viewModel.soundNine = "${activity.externalCacheDir?.absolutePath}/soundNine.3gp"
+        viewModel.soundTen = "${activity.externalCacheDir?.absolutePath}/soundTen.3gp"
+        viewModel.soundEleven = "${activity.externalCacheDir?.absolutePath}/soundEleven.3gp"
+        viewModel.soundTwelve = "${activity.externalCacheDir?.absolutePath}/soundTwelve.3gp"
+        viewModel.soundThirteen = "${activity.externalCacheDir?.absolutePath}/soundThirteen.3gp"
+        viewModel.soundFourteen = "${activity.externalCacheDir?.absolutePath}/soundFourteen.3gp"
+        viewModel.soundFifteen = "${activity.externalCacheDir?.absolutePath}/soundFifteen.3gp"
+        viewModel.soundSixteen = "${activity.externalCacheDir?.absolutePath}/soundSixteen.3gp"
+        viewModel.soundSeventeen = "${activity.externalCacheDir?.absolutePath}/soundSeventeen.3gp"
+        viewModel.soundEighteen = "${activity.externalCacheDir?.absolutePath}/soundEighteen.3gp"
+        viewModel.soundNineteen = "${activity.externalCacheDir?.absolutePath}/soundNineteen.3gp"
+        viewModel.soundTwenty = "${activity.externalCacheDir?.absolutePath}/soundTwenty.3gp"
+        setupSoundButtonStyles(soundFiles = viewModel.soundFiles)
+    }
+    private fun setupSoundButtonStyles(soundFiles: Array<String>){
         var count = 0
         for(values in soundFiles){
             println("SOUND FILES = > $values")
@@ -145,64 +104,84 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
     private fun setupPlayButtonSoundStyle(index: Int){
         when (index) {
             0 -> {
-                changeButtonStyleToAudioFilled(binding.soundOne)
+                viewModel.soundOneText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundOneColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             1 -> {
-                changeButtonStyleToAudioFilled(binding.soundTwo)
+                viewModel.soundTwoText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundThreeColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             2 -> {
-                changeButtonStyleToAudioFilled(binding.soundThree)
+                viewModel.soundThreeText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundThreeColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             3 -> {
-                changeButtonStyleToAudioFilled(binding.soundFour)
+                viewModel.soundFourText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundFourColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             4 -> {
-                changeButtonStyleToAudioFilled(binding.soundFive)
+                viewModel.soundFiveText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundFiveColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             5 -> {
-                changeButtonStyleToAudioFilled(binding.soundSix)
+                viewModel.soundSixText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundSixColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             6 -> {
-                changeButtonStyleToAudioFilled(binding.soundSeven)
+                viewModel.soundSevenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundSevenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             7 -> {
-                changeButtonStyleToAudioFilled(binding.soundEight)
+                viewModel.soundEightText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundEightColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             8 -> {
-                changeButtonStyleToAudioFilled(binding.soundNine)
+                viewModel.soundNineText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundNineColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             9 -> {
-                changeButtonStyleToAudioFilled(binding.soundTen)
+                viewModel.soundTenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundTenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             10 -> {
-                changeButtonStyleToAudioFilled(binding.soundEleven)
+                viewModel.soundElevenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundElevenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             11 -> {
-                changeButtonStyleToAudioFilled(binding.soundTwelve)
+                viewModel.soundTwelveText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundTwelveColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             12 -> {
-                changeButtonStyleToAudioFilled(binding.soundThirteen)
+                viewModel.soundThirteenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundThirteenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             13 -> {
-                changeButtonStyleToAudioFilled(binding.soundFourteen)
+                viewModel.soundFourteenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundFourteenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             14 -> {
-                changeButtonStyleToAudioFilled(binding.soundFifteen)
+                viewModel.soundFifteenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundFifteenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             15 -> {
-                changeButtonStyleToAudioFilled(binding.soundSixteen)
+                viewModel.soundSixteenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundSixteenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             16 -> {
-                changeButtonStyleToAudioFilled(binding.soundSeventeen)
+                viewModel.soundSeventeenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundSeventeenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             17 -> {
-                changeButtonStyleToAudioFilled(binding.soundEighteen)
+                viewModel.soundEighteenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundEighteenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             18 -> {
-                changeButtonStyleToAudioFilled(binding.soundNineteen)
+                viewModel.soundNineteenText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundNineteenColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
             19 -> {
-                changeButtonStyleToAudioFilled(binding.soundTwenty)
+                viewModel.soundTwentyText.set(getStringResIdValue(playText ?: 0))
+                viewModel.soundTwentyColor.set(getColorResIdValue(emeraldGreen ?: 0))
             }
         }
 
@@ -210,62 +189,82 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
 
     private fun setupRecordButtonSoundStyle(index: Int){
         if(index == 0){
-            changeButtonStyleToRecordAudio(binding.soundOne)
+            viewModel.soundOneText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundOneColor.set(getColorResIdValue(whiteColor ?: 0))
         }else if(index == 1){
-            changeButtonStyleToRecordAudio(binding.soundTwo)
+            viewModel.soundTwoText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundTwoColor.set(getColorResIdValue(whiteColor ?: 0))
         }else if(index == 2){
-            changeButtonStyleToRecordAudio(binding.soundThree)
+            viewModel.soundThreeText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundThreeColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 3){
-            changeButtonStyleToRecordAudio(binding.soundFour)
+            viewModel.soundFourText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundFourColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 4){
-            changeButtonStyleToRecordAudio(binding.soundFive)
+            viewModel.soundFiveText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundFiveColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 5){
-            changeButtonStyleToRecordAudio(binding.soundSix)
+            viewModel.soundSixText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundSixColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 6){
-            changeButtonStyleToRecordAudio(binding.soundSeven)
+            viewModel.soundSevenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundSevenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 7){
-            changeButtonStyleToRecordAudio(binding.soundEight)
+            viewModel.soundEightText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundEightColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 8){
-            changeButtonStyleToRecordAudio(binding.soundNine)
+            viewModel.soundNineText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundNineColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 9){
-            changeButtonStyleToRecordAudio(binding.soundTen)
+            viewModel.soundTenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundTenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 10){
-            changeButtonStyleToRecordAudio(binding.soundEleven)
+            viewModel.soundElevenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundElevenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 11){
-            changeButtonStyleToRecordAudio(binding.soundTwelve)
+            viewModel.soundTwelveText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundTwelveColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 12){
-            changeButtonStyleToRecordAudio(binding.soundThirteen)
+            viewModel.soundThirteenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundThirteenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 13){
-            changeButtonStyleToRecordAudio(binding.soundFourteen)
+            viewModel.soundFourteenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundFourteenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 14){
-            changeButtonStyleToRecordAudio(binding.soundFifteen)
+            viewModel.soundFifteenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundFifteenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 15){
-            changeButtonStyleToRecordAudio(binding.soundSixteen)
+            viewModel.soundSixteenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundSixteenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 16){
-            changeButtonStyleToRecordAudio(binding.soundSeventeen)
+            viewModel.soundSeventeenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundSeventeenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 17){
-            changeButtonStyleToRecordAudio(binding.soundEighteen)
+            viewModel.soundEighteenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundEighteenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 18){
-            changeButtonStyleToRecordAudio(binding.soundNineteen)
+            viewModel.soundNineteenText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundNineteenColor.set(getColorResIdValue(whiteColor ?: 0))
         }
         else if(index == 19){
-            changeButtonStyleToRecordAudio(binding.soundTwenty)
+            viewModel.soundTwentyText.set(getStringResIdValue(recordText ?: 0))
+            viewModel.soundTwentyColor.set(getColorResIdValue(whiteColor ?: 0))
         }
     }
 
@@ -273,26 +272,11 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
         binding.recordingInProgressScreen.visibility = View.GONE
     }
 
+
     @RequiresApi(Build.VERSION_CODES.S)
     private fun setupButtons(){
-
-
-
         binding.soundOne.setOnClickListener {
-            if(binding.soundOne.text == context?.getString(R.string.record)){
-                //record an audio file
-                showRecordScreenCountdown(pathName = soundFiles[0], button = binding.soundOne)
-            } else {
-                //play an audio file
-//                fileName = "${activity?.externalCacheDir?.absolutePath}/soundOne.3gp"
-                if(binding.soundOne.text == context?.getString(R.string.stop)){
-                    stopPlayBackAudioOne(binding.soundOne)
-                } else {
-                    playAudioOne(pathName = soundFiles[0])
-                    changeStyleToAudioPlaying(binding.soundOne)
-                }
 
-            }
         }
         binding.soundTwo.setOnClickListener {
             if(binding.soundTwo.text == context?.getString(R.string.record)){
@@ -597,326 +581,7 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
         }
     }
 
-    private fun playAudioOne(pathName: String) {
-        playerOne.reset()
-        playerOne.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
 
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerOne.start()
-        playerOne.isLooping = true
-
-    }
-    private fun playAudioTwo(pathName: String) {
-        playerTwo.reset()
-        playerTwo.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerTwo.start()
-        playerTwo.isLooping = true
-
-    }
-    private fun playAudioThree(pathName: String) {
-        playerThree.reset()
-        playerThree.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerThree.start()
-        playerThree.isLooping = true
-
-    }
-    private fun playAudioFour(pathName: String) {
-        playerFour.reset()
-        playerFour.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerFour.start()
-        playerFour.isLooping = true
-
-    }
-    private fun playAudioFive(pathName: String) {
-        playerFive.reset()
-        playerFive.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerFive.start()
-        playerFive.isLooping = true
-
-    }
-    private fun playAudioSix(pathName: String) {
-        playerSix.reset()
-        playerSix.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerSix.start()
-        playerSix.isLooping = true
-
-    }
-    private fun playAudioSeven(pathName: String) {
-        playerSeven.reset()
-        playerSeven.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerSeven.start()
-        playerSeven.isLooping = true
-
-    }
-    private fun playAudioEight(pathName: String) {
-        playerEight.reset()
-        playerEight.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerEight.start()
-        playerEight.isLooping = true
-
-    }
-    private fun playAudioNine(pathName: String) {
-        playerNine.reset()
-        playerNine.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerNine.start()
-        playerNine.isLooping = true
-
-    }
-    private fun playAudioTen(pathName: String) {
-        playerTen.reset()
-        playerTen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerTen.start()
-        playerTen.isLooping = true
-
-    }
-    private fun playAudioEleven(pathName: String) {
-        playerEleven.reset()
-        playerEleven.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerEleven.start()
-        playerEleven.isLooping = true
-
-    }
-    private fun playAudioTwelve(pathName: String) {
-        playerTwelve.reset()
-        playerTwelve.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerTwelve.start()
-        playerTwelve.isLooping = true
-
-    }
-    private fun playAudioThirteen(pathName: String) {
-        playerThirteen.reset()
-        playerThirteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerThirteen.start()
-        playerThirteen.isLooping = true
-
-    }
-    private fun playAudioFourteen(pathName: String) {
-        playerFourteen.reset()
-        playerFourteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerFourteen.start()
-        playerFourteen.isLooping = true
-
-    }
-    private fun playAudioFifteen(pathName: String) {
-        playerFifteen.reset()
-        playerFifteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerFifteen.start()
-        playerFifteen.isLooping = true
-
-    }
-    private fun playAudioSixteen(pathName: String) {
-        playerSixteen.reset()
-        playerSixteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerSixteen.start()
-        playerSixteen.isLooping = true
-
-    }
-    private fun playAudioSeventeen(pathName: String) {
-        playerSeventeen.reset()
-        playerSeventeen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerSeventeen.start()
-        playerSeventeen.isLooping = true
-
-    }
-    private fun playAudioEighteen(pathName: String) {
-        playerEighteen.reset()
-        playerEighteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerEighteen.start()
-        playerEighteen.isLooping = true
-
-    }
-    private fun playAudioNineteen(pathName: String) {
-        playerNineteen.reset()
-        playerNineteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerNineteen.start()
-        playerNineteen.isLooping = true
-
-    }
-    private fun playAudioTwenty(pathName: String) {
-        playerTwenty.reset()
-        playerTwenty.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (e: IOException) {
-                Toast.makeText(context, "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerTwenty.start()
-        playerTwenty.isLooping = true
-
-    }
 
 
 
@@ -1004,29 +669,19 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
 
     private fun stopAudio(button: AppCompatButton) {
         println("STOPPING AUDIO ! 1")
-        recorder?.apply {
+        viewModel.recorder?.apply {
             println("STOPPING AUDIO ! 2")
             stop()
             release()
 
         }
-        recorder = null
+        viewModel.recorder = null
         binding.recordingInProgressScreen.visibility = View.GONE
         binding.mainLayoutGroup.isEnabled = true
         changeButtonStyleToAudioFilled(button)
         enableAllSoundButtons()
     }
 
-    private fun changeButtonStyleToAudioFilled(button: AppCompatButton) {
-        println("STOPPING AUDIO ! 3")
-        button.text = context?.getString(R.string.play)
-        context?.getColor(R.color.emeraldGreen)?.let { button.setBackgroundColor(it) }
-    }
-
-    private fun changeButtonStyleToRecordAudio(button: AppCompatButton) {
-        button.text = context?.getString(R.string.record)
-        context?.getColor(R.color.white)?.let { button.setBackgroundColor(it) }
-    }
 
     private fun showRecordScreenCountdown(pathName: String, button: AppCompatButton){
         stopAllPlayingAudio()
