@@ -7,8 +7,8 @@
     <data>
         <import type="android.view.View" />
         <variable
-            name="vm"
-            type="com.silvestri.soundpad.ViewModel.MainViewModel"/>
+            name="viewModel"
+            type="com.silvestri.soundpad.ViewModel.MainViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
 
@@ -69,12 +69,12 @@
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_margin="2dp"
-                app:backgroundTint="@{vm.soundOneColor}"
+                app:backgroundTint="@{viewModel.soundOneColor}"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                android:text="@{vm.soundOneText}"
-                android:onClick="@{() -> vm.soundOneClick()}"
-                android:enabled="@{vm.soundOneEnabled}"
+                android:text="@{viewModel.soundOneText}"
+                android:onClick="@{() -> viewModel.soundOneClick()}"
+                android:enabled="@{viewModel.soundOneEnabled}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -86,9 +86,10 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundTwoColor}"
-                android:text="@{vm.soundTwoText}"
-                android:enabled="@{vm.soundTwoEnabled}"
+                app:backgroundTint="@{viewModel.soundTwoColor}"
+                android:text="@{viewModel.soundTwoText}"
+                android:onClick="@{() -> viewModel.soundTwoClick()}"
+                android:enabled="@{viewModel.soundTwoEnabled}"
                 tools:text="@string/record"
                 />
 
@@ -101,9 +102,10 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundThreeColor}"
-                android:text="@{vm.soundThreeText}"
-                android:enabled="@{vm.soundThreeEnabled}"
+                app:backgroundTint="@{viewModel.soundThreeColor}"
+                android:text="@{viewModel.soundThreeText}"
+                android:enabled="@{viewModel.soundThreeEnabled}"
+                android:onClick="@{() -> viewModel.soundThreeClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -115,9 +117,10 @@
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
                 android:layout_height="90dp"
-                app:backgroundTint="@{vm.soundFourColor}"
-                android:text="@{vm.soundFourText}"
-                android:enabled="@{vm.soundFourEnabled}"
+                app:backgroundTint="@{viewModel.soundFourColor}"
+                android:text="@{viewModel.soundFourText}"
+                android:enabled="@{viewModel.soundFourEnabled}"
+                android:onClick="@{() -> viewModel.soundFourClick()}"
                 tools:text="@string/record"/>
 
         </LinearLayout>
@@ -140,9 +143,10 @@
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
                 android:layout_height="90dp"
-                app:backgroundTint="@{vm.soundFiveColor}"
-                android:text="@{vm.soundFiveText}"
-                android:enabled="@{vm.soundFiveEnabled}"
+                app:backgroundTint="@{viewModel.soundFiveColor}"
+                android:text="@{viewModel.soundFiveText}"
+                android:enabled="@{viewModel.soundFiveEnabled}"
+                android:onClick="@{() -> viewModel.soundFiveClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -154,9 +158,10 @@
                 android:layout_width="0dp"
                 android:layout_margin="2dp"
                 android:layout_height="90dp"
-                app:backgroundTint="@{vm.soundSixColor}"
-                android:text="@{vm.soundSixText}"
-                android:enabled="@{vm.soundSixEnabled}"
+                app:backgroundTint="@{viewModel.soundSixColor}"
+                android:text="@{viewModel.soundSixText}"
+                android:enabled="@{viewModel.soundSixEnabled}"
+                android:onClick="@{() -> viewModel.soundSixClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -168,9 +173,10 @@
                 android:layout_height="90dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundSevenColor}"
-                android:text="@{vm.soundSevenText}"
-                android:enabled="@{vm.soundSevenEnabled}"
+                app:backgroundTint="@{viewModel.soundSevenColor}"
+                android:text="@{viewModel.soundSevenText}"
+                android:enabled="@{viewModel.soundSevenEnabled}"
+                android:onClick="@{() -> viewModel.soundSevenClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -182,9 +188,10 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundEightColor}"
-                android:text="@{vm.soundEightText}"
-                android:enabled="@{vm.soundEightEnabled}"
+                app:backgroundTint="@{viewModel.soundEightColor}"
+                android:text="@{viewModel.soundEightText}"
+                android:enabled="@{viewModel.soundEightEnabled}"
+                android:onClick="@{() -> viewModel.soundEightClick()}"
                 tools:text="@string/record"/>
 
         </LinearLayout>
@@ -208,9 +215,10 @@
                 android:layout_height="90dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundNineColor}"
-                android:text="@{vm.soundNineText}"
-                android:enabled="@{vm.soundNineEnabled}"
+                app:backgroundTint="@{viewModel.soundNineColor}"
+                android:text="@{viewModel.soundNineText}"
+                android:enabled="@{viewModel.soundNineEnabled}"
+                android:onClick="@{() -> viewModel.soundNineClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -222,9 +230,10 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundTenColor}"
-                android:text="@{vm.soundTenText}"
-                android:enabled="@{vm.soundTenEnabled}"
+                app:backgroundTint="@{viewModel.soundTenColor}"
+                android:text="@{viewModel.soundTenText}"
+                android:enabled="@{viewModel.soundTenEnabled}"
+                android:onClick="@{() -> viewModel.soundTenClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -236,9 +245,10 @@
                 android:layout_height="90dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundElevenColor}"
-                android:text="@{vm.soundElevenText}"
-                android:enabled="@{vm.soundElevenEnabled}"
+                app:backgroundTint="@{viewModel.soundElevenColor}"
+                android:text="@{viewModel.soundElevenText}"
+                android:enabled="@{viewModel.soundElevenEnabled}"
+                android:onClick="@{() -> viewModel.soundElevenClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -250,9 +260,10 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundTwelveColor}"
-                android:text="@{vm.soundTwelveText}"
-                android:enabled="@{vm.soundTwelveEnabled}"
+                app:backgroundTint="@{viewModel.soundTwelveColor}"
+                android:text="@{viewModel.soundTwelveText}"
+                android:enabled="@{viewModel.soundTwelveEnabled}"
+                android:onClick="@{() -> viewModel.soundTwelveClick()}"
                 tools:text="@string/record"/>
 
         </LinearLayout>
@@ -275,9 +286,10 @@
                 android:textColor="@color/black"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundThirteenColor}"
-                android:text="@{vm.soundThirteenText}"
-                android:enabled="@{vm.soundThirteenEnabled}"
+                app:backgroundTint="@{viewModel.soundThirteenColor}"
+                android:text="@{viewModel.soundThirteenText}"
+                android:enabled="@{viewModel.soundThirteenEnabled}"
+                android:onClick="@{() -> viewModel.soundThirteenClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -289,9 +301,10 @@
                 android:textColor="@color/black"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundFourteenColor}"
-                android:text="@{vm.soundFourteenText}"
-                android:enabled="@{vm.soundFourteenEnabled}"
+                app:backgroundTint="@{viewModel.soundFourteenColor}"
+                android:text="@{viewModel.soundFourteenText}"
+                android:enabled="@{viewModel.soundFourteenEnabled}"
+                android:onClick="@{() -> viewModel.soundFourteenClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -303,9 +316,10 @@
                 android:textColor="@color/black"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundFifteenColor}"
-                android:text="@{vm.soundFifteenText}"
-                android:enabled="@{vm.soundFifteenEnabled}"
+                app:backgroundTint="@{viewModel.soundFifteenColor}"
+                android:text="@{viewModel.soundFifteenText}"
+                android:enabled="@{viewModel.soundFifteenEnabled}"
+                android:onClick="@{() -> viewModel.soundFifteenClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -317,9 +331,10 @@
                 android:textColor="@color/black"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundSixteenColor}"
-                android:text="@{vm.soundSixteenText}"
-                android:enabled="@{vm.soundSixteenEnabled}"
+                app:backgroundTint="@{viewModel.soundSixteenColor}"
+                android:text="@{viewModel.soundSixteenText}"
+                android:enabled="@{viewModel.soundSixteenEnabled}"
+                android:onClick="@{() -> viewModel.soundSixteenClick()}"
                 tools:text="@string/record"/>
 
         </LinearLayout>
@@ -342,9 +357,10 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundSeventeenColor}"
-                android:text="@{vm.soundSeventeenText}"
-                android:enabled="@{vm.soundSeventeenEnabled}"
+                app:backgroundTint="@{viewModel.soundSeventeenColor}"
+                android:text="@{viewModel.soundSeventeenText}"
+                android:enabled="@{viewModel.soundSeventeenEnabled}"
+                android:onClick="@{() -> viewModel.soundSeventeenClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -356,9 +372,10 @@
                 android:textColor="@color/black"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundEighteenColor}"
-                android:text="@{vm.soundEighteenText}"
-                android:enabled="@{vm.soundEighteenEnabled}"
+                app:backgroundTint="@{viewModel.soundEighteenColor}"
+                android:text="@{viewModel.soundEighteenText}"
+                android:enabled="@{viewModel.soundEighteenEnabled}"
+                android:onClick="@{() -> viewModel.soundEighteenClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -370,9 +387,10 @@
                 android:textColor="@color/black"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundNineteenColor}"
-                android:text="@{vm.soundNineteenText}"
-                android:enabled="@{vm.soundNineteenEnabled}"
+                app:backgroundTint="@{viewModel.soundNineteenColor}"
+                android:text="@{viewModel.soundNineteenText}"
+                android:enabled="@{viewModel.soundNineteenEnabled}"
+                android:onClick="@{() -> viewModel.soundNineteenClick()}"
                 tools:text="@string/record"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -384,9 +402,10 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/rounded_record_button_8"
                 android:textAllCaps="false"
-                app:backgroundTint="@{vm.soundTwentyColor}"
-                android:text="@{vm.soundTwentyText}"
-                android:enabled="@{vm.soundTwentyEnabled}"
+                app:backgroundTint="@{viewModel.soundTwentyColor}"
+                android:text="@{viewModel.soundTwentyText}"
+                android:enabled="@{viewModel.soundTwentyEnabled}"
+                android:onClick="@{() -> viewModel.soundTwentyClick()}"
                 tools:text="@string/record"/>
 
         </LinearLayout>
@@ -418,7 +437,7 @@
             android:id="@+id/stopRecordingButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/stop"
+            android:text="@{viewModel.recordingInProgressText}"
             android:background="@drawable/rounded_stop_button_8"
             android:textColor="@color/white"
             android:visibility="gone"
@@ -433,14 +452,14 @@
             android:id="@+id/mainLayoutGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{vm.mainLayoutVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.mainLayoutVisibility ? View.VISIBLE : View.GONE}"
             app:constraint_referenced_ids="titleTextView , appIconImage , helpButton ,rowOne, rowTwo, rowThree, rowFour, rowFive" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/recordingInProgressScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{vm.recordingInProgressVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.recordingInProgressVisibility ? View.VISIBLE : View.GONE}"
             app:constraint_referenced_ids="stopRecordingButton, recordingInProgressText, recordingBackgroundView" />
 
 
