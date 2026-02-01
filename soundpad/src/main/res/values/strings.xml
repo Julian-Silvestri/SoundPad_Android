@@ -16,5 +16,5 @@
     <string name="help_three">3. If you wish to delete recordings tap the button below. The delete buttons are mapped respectively to each recording box.</string>
     <string name="help_four">4. Based on user feedback; support for importing custom sounds will be included.</string>
     <string name="help_five">5. If you are recoding something and you do not hear a playback. Make sure your phone is not on silent and your volume is not muted.</string>
-
+    <string name="content_description_na">Content Description Not Available</string>
 </resources>
