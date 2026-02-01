@@ -1,21 +1,16 @@
 package com.silvestri.soundpad.fragments
 
 import android.app.Activity
-import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.silvestri.soundpad.R
-import com.silvestri.soundpad.ViewModel.MainViewModel
+import com.silvestri.soundpad.models.MainViewModel
 import com.silvestri.soundpad.databinding.MainFragmentLayoutBinding
 import java.io.File
-import java.io.IOException
 
 class MainFragment: Fragment(R.layout.main_fragment_layout) {
 
@@ -27,16 +22,17 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
     private var recordText:Int? = null
     private var playText:Int? = null
     private var stopText: Int? = null
-    private lateinit var currentAudioButton: AppCompatButton
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = MainFragmentLayoutBinding.bind(view)
-        setupViews()
-        setupSoundPaths(requireActivity())
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
         setColorsForUse()
         setTextValuesForUse()
+
+
     }
 
     private fun setColorsForUse(){
@@ -55,6 +51,9 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
         viewModel.playText.set(getStringResIdValue(playText ?: 0))
         viewModel.recordText.set(getStringResIdValue(recordText ?: 0))
         viewModel.stopText.set(getStringResIdValue(stopText ?: 0))
+
+        setupViews()
+        setupSoundPaths(requireActivity())
     }
 
     private fun getStringResIdValue(id: Int): String {
@@ -86,6 +85,7 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
         viewModel.soundEighteen = "${activity.externalCacheDir?.absolutePath}/soundEighteen.3gp"
         viewModel.soundNineteen = "${activity.externalCacheDir?.absolutePath}/soundNineteen.3gp"
         viewModel.soundTwenty = "${activity.externalCacheDir?.absolutePath}/soundTwenty.3gp"
+        viewModel.setupSoundFiles()
         setupSoundButtonStyles(soundFiles = viewModel.soundFiles)
     }
     private fun setupSoundButtonStyles(soundFiles: Array<String>){
@@ -274,7 +274,8 @@ class MainFragment: Fragment(R.layout.main_fragment_layout) {
     }
 
     private fun setupViews(){
-        binding.recordingInProgressScreen.visibility = View.GONE
+        viewModel.recordingInProgressVisibility.set(false)
+        viewModel.mainLayoutVisibility.set(true)
     }
 
 }

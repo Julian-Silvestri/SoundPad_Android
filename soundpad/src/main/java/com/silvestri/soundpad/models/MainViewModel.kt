@@ -1,4 +1,4 @@
-package com.silvestri.soundpad.ViewModel
+package com.silvestri.soundpad.models
 
 import android.app.Application
 import android.media.MediaPlayer
@@ -7,11 +7,10 @@ import android.os.Build
 import android.os.CountDownTimer
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import java.io.File
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
+import java.io.File
 import java.io.IOException
-
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -21,7 +20,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var recorder: MediaRecorder? = null
     var soundFiles = emptyArray<String>()
-
     val playerOne = MediaPlayer()
     val playerTwo = MediaPlayer()
     val playerThree = MediaPlayer()
@@ -135,7 +133,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var stopRecordingButtonEnabled = ObservableField(true)
 
     var recordingInProgressVisibility = ObservableField(false)
-    var mainLayoutVisibility = ObservableField(false)
+    var mainLayoutVisibility = ObservableField(true)
     var recordingInProgressText = ObservableField("")
 
     var orangeColor = ObservableField(0)
