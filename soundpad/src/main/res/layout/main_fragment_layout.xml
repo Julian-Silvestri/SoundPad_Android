@@ -351,18 +351,18 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/soundSeventeen"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:textColor="@color/black"
                 android:layout_height="90dp"
                 android:layout_margin="2dp"
+                android:layout_weight="1"
                 android:background="@drawable/rounded_record_button_8"
-                android:textAllCaps="false"
-                app:backgroundTint="@{viewModel.soundSeventeenColor}"
-                android:text="@{viewModel.soundSeventeenText}"
                 android:enabled="@{viewModel.soundSeventeenEnabled}"
                 android:onClick="@{() -> viewModel.soundSeventeenClick()}"
-                tools:text="@string/record"/>
+                android:text="@{viewModel.soundSeventeenText}"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                app:backgroundTint="@{viewModel.soundSeventeenColor}"
+                tools:text="@string/record" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/soundEighteen"
@@ -433,21 +433,25 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/recording"/>
+            android:text="@{viewModel.recordingInProgressText}"/>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/stopRecordingButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.recordingInProgressText}"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/rounded_stop_button_8"
+            android:onClick="@{() -> viewModel.stopRecording()}"
+            android:text="@{viewModel.stopRecordingButtonText}"
             android:textColor="@color/white"
             android:visibility="@{viewModel.recordingInProgressVisibility ? View.VISIBLE : View.GONE}"
-            tools:visibility="visible"
-            android:layout_margin="4dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rowFive"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/mainLayoutGroup"

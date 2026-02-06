@@ -15,6 +15,7 @@ navigationVersion = "2.3.4"
 androidxViewModel = "2.7.0"
 androidxActivity = "1.8.2"
 androidxFragment = "1.6.2"
+media3CommonKtx = "1.9.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +33,7 @@ navigation-ui = {group = "androidx.navigation" ,name="navigation-ui", version.re
 androidx-lifecycle-viewmodel-ktx = {group = "androidx.lifecycle", name="lifecycle-viewmodel-ktx", version.ref = "androidxViewModel"}
 androidx-activity = {group="androidx.activity", name="activity-ktx", version.ref = "androidxActivity" }
 androidx-fragment = {group = "androidx.fragment", name="fragment-ktx" , version.ref = "androidxFragment"}
+androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
 
 
 [plugins]

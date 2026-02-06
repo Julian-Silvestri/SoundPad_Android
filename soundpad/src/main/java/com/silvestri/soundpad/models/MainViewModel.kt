@@ -1,8 +1,9 @@
 package com.silvestri.soundpad.models
 
 import android.app.Application
-import android.media.MediaPlayer
+import android.media.AudioAttributes
 import android.media.MediaRecorder
+import android.media.SoundPool
 import android.os.Build
 import android.os.CountDownTimer
 import android.widget.Toast
@@ -17,29 +18,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init{
         setupSoundFiles()
     }
-
     var recorder: MediaRecorder? = null
     var soundFiles = emptyArray<String>()
-    val playerOne = MediaPlayer()
-    val playerTwo = MediaPlayer()
-    val playerThree = MediaPlayer()
-    val playerFour = MediaPlayer()
-    val playerFive = MediaPlayer()
-    val playerSix = MediaPlayer()
-    val playerSeven = MediaPlayer()
-    val playerEight = MediaPlayer()
-    val playerNine = MediaPlayer()
-    val playerTen = MediaPlayer()
-    val playerEleven = MediaPlayer()
-    val playerTwelve = MediaPlayer()
-    val playerThirteen = MediaPlayer()
-    val playerFourteen = MediaPlayer()
-    val playerFifteen = MediaPlayer()
-    val playerSixteen = MediaPlayer()
-    val playerSeventeen = MediaPlayer()
-    val playerEighteen = MediaPlayer()
-    val playerNineteen = MediaPlayer()
-    val playerTwenty = MediaPlayer()
 
     var soundOne = ""
     var soundTwo = ""
@@ -105,10 +85,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var soundNineteenColor = ObservableField(0)
     var soundTwentyColor = ObservableField(0)
 
-    var recordText = ObservableField("")
-    var playText = ObservableField("")
-    var stopText = ObservableField("")
-
     var soundOneEnabled = ObservableField(true)
     var soundTwoEnabled = ObservableField(true)
     var soundThreeEnabled = ObservableField(true)
@@ -136,15 +112,46 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var mainLayoutVisibility = ObservableField(true)
     var recordingInProgressText = ObservableField("")
 
+    var stopRecordingButtonTextId = ObservableField(0)
+    var recordTextId = ObservableField(0)
+    var recordingTextId = ObservableField(0)
+    var playTextId = ObservableField(0)
+    var stopTextId = ObservableField(0)
+
+    var recordText = ObservableField("")
+    var recordingText = ObservableField("")
+    var playText = ObservableField("")
+    var stopText = ObservableField("")
+    var stopRecordingButtonText = ObservableField("")
+
+    var orangeColorId = ObservableField(0)
+    var whiteColorId = ObservableField(0)
+    var emeraldGreenId = ObservableField(0)
     var orangeColor = ObservableField(0)
-    var whiteColor = ObservableField(0)
-    var emeraldGreenColor = ObservableField(0)
+    var whiteColor= ObservableField(0)
+    var emeraldGreen = ObservableField(0)
+
+    private val activeStreamMap = mutableMapOf<Int, Int>()
+    private val loadedSoundMap = mutableMapOf<Int, Int>()
+    private var soundPool: SoundPool? =
+
+    init {
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_GAME)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(20)
+            .setAudioAttributes(audioAttributes)
+            .build()
+
+        setupSoundFiles()
+    }
 
     fun getApp(): Application {
         return getApplication()
     }
-
-
 
     fun setupSoundFiles(){
         soundFiles = arrayOf(
@@ -170,6 +177,234 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             soundTwenty
         )
     }
+
+    fun getStringResIdValue(id: Int): String {
+        return getApp().getString(id)
+    }
+
+    fun getColorResIdValue(id: Int): Int {
+        return getApp().getColor(id)
+    }
+    fun setupStringTexts(){
+        playText.set(getStringResIdValue(playTextId.get() ?: 0))
+        stopText.set(getStringResIdValue(stopTextId.get() ?: 0))
+        recordText.set(getStringResIdValue(recordTextId.get() ?: 0))
+        recordingText.set(getStringResIdValue(recordingTextId.get() ?: 0))
+        stopRecordingButtonText.set(getStringResIdValue(stopRecordingButtonTextId.get() ?: 0))
+    }
+
+    fun setupColors(){
+        emeraldGreen.set(getColorResIdValue(emeraldGreenId.get() ?: 0))
+        whiteColor.set(getColorResIdValue(whiteColorId.get() ?: 0))
+        orangeColor.set(getColorResIdValue(orangeColorId.get() ?: 0))
+    }
+
+    fun setupPlayButtonSoundStyle(index: Int){
+        when (index) {
+            0 -> {
+                soundOneText.set(playText.get())
+                soundOneColor.set(emeraldGreen.get())
+            }
+            1 -> {
+                soundTwoText.set(playText.get())
+                soundTwoColor.set(emeraldGreen.get())
+            }
+            2 -> {
+                soundThreeText.set(playText.get())
+                soundThreeColor.set(emeraldGreen.get())
+            }
+            3 -> {
+                soundFourText.set(playText.get())
+                soundFourColor.set(emeraldGreen.get())
+            }
+            4 -> {
+                soundFiveText.set(playText.get())
+                soundFiveColor.set(emeraldGreen.get())
+            }
+            5 -> {
+                soundSixText.set(playText.get())
+                soundSixColor.set(emeraldGreen.get())
+            }
+            6 -> {
+                soundSevenText.set(playText.get())
+                soundSevenColor.set(emeraldGreen.get())
+            }
+            7 -> {
+                soundEightText.set(playText.get())
+                soundEightColor.set(emeraldGreen.get())
+            }
+            8 -> {
+                soundNineText.set(playText.get())
+                soundNineColor.set(emeraldGreen.get())
+            }
+            9 -> {
+                soundTenText.set(playText.get())
+                soundTenColor.set(emeraldGreen.get())
+            }
+            10 -> {
+                soundElevenText.set(playText.get())
+                soundElevenColor.set(emeraldGreen.get())
+            }
+            11 -> {
+                soundTwelveText.set(playText.get())
+                soundTwelveColor.set(emeraldGreen.get())
+            }
+            12 -> {
+                soundThirteenText.set(playText.get())
+                soundThirteenColor.set(emeraldGreen.get())
+            }
+            13 -> {
+                soundFourteenText.set(playText.get())
+                soundFourteenColor.set(emeraldGreen.get())
+            }
+            14 -> {
+                soundFifteenText.set(playText.get())
+                soundFifteenColor.set(emeraldGreen.get())
+            }
+            15 -> {
+                soundSixteenText.set(playText.get())
+                soundSixteenColor.set(emeraldGreen.get())
+            }
+            16 -> {
+                soundSeventeenText.set(playText.get())
+                soundSeventeenColor.set(emeraldGreen.get())
+            }
+            17 -> {
+                soundEighteenText.set(playText.get())
+                soundEighteenColor.set(emeraldGreen.get())
+            }
+            18 -> {
+                soundNineteenText.set(playText.get())
+                soundNineteenColor.set(emeraldGreen.get())
+            }
+            19 -> {
+                soundTwentyText.set(playText.get())
+                soundTwentyColor.set(emeraldGreen.get())
+            }
+        }
+    }
+    fun setupRecordButtonSoundStyle(index: Int){
+        if(index == 0){
+            soundOneText.set(recordText.get())
+            soundOneColor.set(whiteColor.get())
+        }else if(index == 1){
+            soundTwoText.set(recordText.get())
+            soundTwoColor.set(whiteColor.get())
+        }else if(index == 2){
+            soundThreeText.set(recordText.get())
+            soundThreeColor.set(whiteColor.get())
+        }
+        else if(index == 3){
+            soundFourText.set(recordText.get())
+            soundFourColor.set(whiteColor.get())
+        }
+        else if(index == 4){
+            soundFiveText.set(recordText.get())
+            soundFiveColor.set(whiteColor.get())
+        }
+        else if(index == 5){
+            soundSixText.set(recordText.get())
+            soundSixColor.set(whiteColor.get())
+        }
+        else if(index == 6){
+            soundSevenText.set(recordText.get())
+            soundSevenColor.set(whiteColor.get())
+        }
+        else if(index == 7){
+            soundEightText.set(recordText.get())
+            soundEightColor.set(whiteColor.get())
+        }
+        else if(index == 8){
+            soundNineText.set(recordText.get())
+            soundNineColor.set(whiteColor.get())
+        }
+        else if(index == 9){
+            soundTenText.set(recordText.get())
+            soundTenColor.set(whiteColor.get())
+        }
+        else if(index == 10){
+            soundElevenText.set(recordText.get())
+            soundElevenColor.set(whiteColor.get())
+        }
+        else if(index == 11){
+            soundTwelveText.set(recordText.get())
+            soundTwelveColor.set(whiteColor.get())
+        }
+        else if(index == 12){
+            soundThirteenText.set(recordText.get())
+            soundThirteenColor.set(whiteColor.get())
+        }
+        else if(index == 13){
+            soundFourteenText.set(recordText.get())
+            soundFourteenColor.set(whiteColor.get())
+        }
+        else if(index == 14){
+            soundFifteenText.set(recordText.get())
+            soundFifteenColor.set(whiteColor.get())
+        }
+        else if(index == 15){
+            soundSixteenText.set(recordText.get())
+            soundSixteenColor.set(whiteColor.get())
+        }
+        else if(index == 16){
+            soundSeventeenText.set(recordText.get())
+            soundSeventeenColor.set(whiteColor.get())
+        }
+        else if(index == 17){
+            soundEighteenText.set(recordText.get())
+            soundEighteenColor.set(whiteColor.get())
+        }
+        else if(index == 18){
+            soundNineteenText.set(recordText.get())
+            soundNineteenColor.set(whiteColor.get())
+        }
+        else if(index == 19){
+            soundTwentyText.set(recordText.get())
+            soundTwentyColor.set(whiteColor.get())
+        }
+    }
+
+    fun setupSoundButtonStyles(soundFiles: Array<String>){
+        var count = 0
+        for(values in soundFiles){
+            println("SOUND FILES = > $values")
+            if(count > 20){
+                return
+            }
+            val file = File(values)
+            if(!file.exists()){
+                println("SOUND DOES NOT EXIST = > ${soundFiles[count]}")
+                setupRecordButtonSoundStyle(count)
+            } else {
+                setupPlayButtonSoundStyle(count)
+            }
+            count+=1
+        }
+    }
+    fun setupSoundPaths() {
+        soundOne = "${getApp().externalCacheDir?.absolutePath}/soundOne.3gp"
+        soundTwo = "${getApp().externalCacheDir?.absolutePath}/soundTwo.3gp"
+        soundThree = "${getApp().externalCacheDir?.absolutePath}/soundThree.3gp"
+        soundFour = "${getApp().externalCacheDir?.absolutePath}/soundFour.3gp"
+        soundFive = "${getApp().externalCacheDir?.absolutePath}/soundFive.3gp"
+        soundSix = "${getApp().externalCacheDir?.absolutePath}/soundSix.3gp"
+        soundSeven = "${getApp().externalCacheDir?.absolutePath}/soundSeven.3gp"
+        soundEight = "${getApp().externalCacheDir?.absolutePath}/soundEight.3gp"
+        soundNine = "${getApp().externalCacheDir?.absolutePath}/soundNine.3gp"
+        soundTen = "${getApp().externalCacheDir?.absolutePath}/soundTen.3gp"
+        soundEleven = "${getApp().externalCacheDir?.absolutePath}/soundEleven.3gp"
+        soundTwelve = "${getApp().externalCacheDir?.absolutePath}/soundTwelve.3gp"
+        soundThirteen = "${getApp().externalCacheDir?.absolutePath}/soundThirteen.3gp"
+        soundFourteen = "${getApp().externalCacheDir?.absolutePath}/soundFourteen.3gp"
+        soundFifteen = "${getApp().externalCacheDir?.absolutePath}/soundFifteen.3gp"
+        soundSixteen = "${getApp().externalCacheDir?.absolutePath}/soundSixteen.3gp"
+        soundSeventeen = "${getApp().externalCacheDir?.absolutePath}/soundSeventeen.3gp"
+        soundEighteen = "${getApp().externalCacheDir?.absolutePath}/soundEighteen.3gp"
+        soundNineteen = "${getApp().externalCacheDir?.absolutePath}/soundNineteen.3gp"
+        soundTwenty = "${getApp().externalCacheDir?.absolutePath}/soundTwenty.3gp"
+        setupSoundFiles()
+        setupSoundButtonStyles(soundFiles = soundFiles)
+    }
     @RequiresApi(Build.VERSION_CODES.S)
     fun soundOneClick(){
         if(soundOneText.get() == recordText.get()){
@@ -177,16 +412,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[0], button = 0)
         } else {
             //play an audio file
-            if(playerOne.isPlaying){
-                stopSoundOne()
-                soundOneColor.set(emeraldGreenColor.get())
+            if(isStreamActive(0)){
+                stopSound(0)
+                soundOneColor.set(emeraldGreen.get())
                 soundOneText.set(playText.get())
             } else {
-                playAudioOne(pathName = soundFiles[0])
+                playSound(0,pathName = soundFiles[0])
                 soundOneColor.set(orangeColor.get())
                 soundOneText.set(stopText.get())
             }
-
         }
     }
     @RequiresApi(Build.VERSION_CODES.S)
@@ -196,16 +430,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[1], button = 1)
         } else {
             //play an audio file
-            if(playerTwo.isPlaying){
-                stopSoundTwo()
-                soundTwoColor.set(emeraldGreenColor.get())
+            if(isStreamActive(1)){
+                stopSound(1)
+                soundTwoColor.set(emeraldGreen.get())
                 soundTwoText.set(playText.get())
             } else {
-                playAudioTwo(pathName = soundFiles[1])
+                playSound(1,pathName = soundFiles[1])
                 soundTwoColor.set(orangeColor.get())
                 soundTwoText.set(stopText.get())
             }
-
         }
     }
     @RequiresApi(Build.VERSION_CODES.S)
@@ -215,16 +448,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[2], button = 2)
         } else {
             //play an audio file
-            if(playerThree.isPlaying){
-                stopSoundThree()
-                soundThreeColor.set(emeraldGreenColor.get())
+            if(isStreamActive(2)){
+                stopSound(2)
+                soundThreeColor.set(emeraldGreen.get())
                 soundThreeText.set(playText.get())
             } else {
-                playAudioThree(pathName = soundFiles[2])
+                playSound(2,pathName = soundFiles[2])
                 soundThreeColor.set(orangeColor.get())
                 soundThreeText.set(stopText.get())
             }
-
         }
     }
     @RequiresApi(Build.VERSION_CODES.S)
@@ -234,12 +466,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[3], button = 3)
         } else {
             //play an audio file
-            if(playerFour.isPlaying){
-                stopSoundFour()
-                soundFourColor.set(emeraldGreenColor.get())
+            if(isStreamActive(3)){
+                stopSound(3)
+                soundFourColor.set(emeraldGreen.get())
                 soundFourText.set(playText.get())
             } else {
-                playAudioFour(pathName = soundFiles[3])
+                playSound(3,pathName = soundFiles[3])
                 soundFourColor.set(orangeColor.get())
                 soundFourText.set(stopText.get())
             }
@@ -253,12 +485,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[4], button = 4)
         } else {
             //play an audio file
-            if(playerFive.isPlaying){
-                stopSoundFive()
-                soundFiveColor.set(emeraldGreenColor.get())
+            if(isStreamActive(4)){
+                stopSound(4)
+                soundFiveColor.set(emeraldGreen.get())
                 soundFiveText.set(playText.get())
             } else {
-                playAudioFive(pathName = soundFiles[4])
+                playSound(4,pathName = soundFiles[4])
                 soundFiveColor.set(orangeColor.get())
                 soundFiveText.set(stopText.get())
             }
@@ -272,12 +504,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[5], button = 5)
         } else {
             //play an audio file
-            if(playerSix.isPlaying){
-                stopSoundSix()
-                soundSixColor.set(emeraldGreenColor.get())
+            if(isStreamActive(5)){
+                stopSound(5)
+                soundSixColor.set(emeraldGreen.get())
                 soundSixText.set(playText.get())
             } else {
-                playAudioSix(pathName = soundFiles[5])
+                playSound(5,pathName = soundFiles[5])
                 soundSixColor.set(orangeColor.get())
                 soundSixText.set(stopText.get())
             }
@@ -291,12 +523,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[6], button = 6)
         } else {
             //play an audio file
-            if(playerSeven.isPlaying){
-                stopSoundSeven()
-                soundSevenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(6)){
+                stopSound(6)
+                soundSevenColor.set(emeraldGreen.get())
                 soundSevenText.set(playText.get())
             } else {
-                playAudioSeven(pathName = soundFiles[6])
+                playSound(6,pathName = soundFiles[6])
                 soundSevenColor.set(orangeColor.get())
                 soundSevenText.set(stopText.get())
             }
@@ -310,12 +542,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[7], button = 7)
         } else {
             //play an audio file
-            if(playerEight.isPlaying){
-                stopSoundEight()
-                soundEightColor.set(emeraldGreenColor.get())
+            if(isStreamActive(7)){
+                stopSound(7)
+                soundEightColor.set(emeraldGreen.get())
                 soundEightText.set(playText.get())
             } else {
-                playAudioEight(pathName = soundFiles[7])
+                playSound(7,pathName = soundFiles[7])
                 soundEightColor.set(orangeColor.get())
                 soundEightText.set(stopText.get())
             }
@@ -329,12 +561,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[8], button = 8)
         } else {
             //play an audio file
-            if(playerNine.isPlaying){
-                stopSoundNine()
-                soundNineColor.set(emeraldGreenColor.get())
+            if(isStreamActive(8)){
+                stopSound(8)
+                soundNineColor.set(emeraldGreen.get())
                 soundNineText.set(playText.get())
             } else {
-                playAudioNine(pathName = soundFiles[8])
+                playSound(8,pathName = soundFiles[8])
                 soundNineColor.set(orangeColor.get())
                 soundNineText.set(stopText.get())
             }
@@ -348,12 +580,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[9], button = 9)
         } else {
             //play an audio file
-            if(playerTen.isPlaying){
-                stopSoundTen()
-                soundTenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(9)){
+                stopSound(9)
+                soundTenColor.set(emeraldGreen.get())
                 soundTenText.set(playText.get())
             } else {
-                playAudioTen(pathName = soundFiles[9])
+                playSound(9,pathName = soundFiles[9])
                 soundTenColor.set(orangeColor.get())
                 soundTenText.set(stopText.get())
             }
@@ -367,12 +599,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[10], button = 10)
         } else {
             //play an audio file
-            if(playerEleven.isPlaying){
-                stopSoundEleven()
-                soundElevenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(10)){
+                stopSound(10)
+                soundElevenColor.set(emeraldGreen.get())
                 soundElevenText.set(playText.get())
             } else {
-                playAudioEleven(pathName = soundFiles[10])
+                playSound(10,pathName = soundFiles[10])
                 soundElevenColor.set(orangeColor.get())
                 soundElevenText.set(stopText.get())
             }
@@ -386,12 +618,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[11], button = 11)
         } else {
             //play an audio file
-            if(playerTwelve.isPlaying){
-                stopSoundTwelve()
-                soundTwelveColor.set(emeraldGreenColor.get())
+            if(isStreamActive(11)){
+                stopSound(11)
+                soundTwelveColor.set(emeraldGreen.get())
                 soundTwelveText.set(playText.get())
             } else {
-                playAudioTwelve(pathName = soundFiles[11])
+                playSound(11,pathName = soundFiles[11])
                 soundTwelveColor.set(orangeColor.get())
                 soundTwelveText.set(stopText.get())
             }
@@ -405,12 +637,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[12], button = 12)
         } else {
             //play an audio file
-            if(playerThirteen.isPlaying){
-                stopSoundThirteen()
-                soundThirteenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(12)){
+                stopSound(12)
+                soundThirteenColor.set(emeraldGreen.get())
                 soundThirteenText.set(playText.get())
             } else {
-                playAudioThirteen(pathName = soundFiles[12])
+                playSound(12,pathName = soundFiles[12])
                 soundThirteenColor.set(orangeColor.get())
                 soundThirteenText.set(stopText.get())
             }
@@ -424,12 +656,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[13], button = 13)
         } else {
             //play an audio file
-            if(playerFourteen.isPlaying){
-                stopSoundFourteen()
-                soundFourteenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(13)){
+                stopSound(13)
+                soundFourteenColor.set(emeraldGreen.get())
                 soundFourteenText.set(playText.get())
             } else {
-                playAudioFourteen(pathName = soundFiles[13])
+                playSound(13,pathName = soundFiles[13])
                 soundFourteenColor.set(orangeColor.get())
                 soundFourteenText.set(stopText.get())
             }
@@ -443,12 +675,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[14], button = 14)
         } else {
             //play an audio file
-            if(playerFifteen.isPlaying){
-                stopSoundFifteen()
-                soundFifteenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(14)){
+                stopSound(14)
+                soundFifteenColor.set(emeraldGreen.get())
                 soundFifteenText.set(playText.get())
             } else {
-                playAudioFifteen(pathName = soundFiles[14])
+                playSound(14,pathName = soundFiles[14])
                 soundFifteenColor.set(orangeColor.get())
                 soundFifteenText.set(stopText.get())
             }
@@ -462,12 +694,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[15], button = 15)
         } else {
             //play an audio file
-            if(playerSixteen.isPlaying){
-                stopSoundSixteen()
-                soundSixteenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(15)){
+                stopSound(15)
+                soundSixteenColor.set(emeraldGreen.get())
                 soundSixteenText.set(playText.get())
             } else {
-                playAudioSixteen(pathName = soundFiles[15])
+                playSound(15,pathName = soundFiles[15])
                 soundSixteenColor.set(orangeColor.get())
                 soundSixteenText.set(stopText.get())
             }
@@ -481,12 +713,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[16], button = 16)
         } else {
             //play an audio file
-            if(playerSeventeen.isPlaying){
-                stopSoundSeventeen()
-                soundSeventeenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(16)){
+                stopSound(16)
+                soundSeventeenColor.set(emeraldGreen.get())
                 soundSeventeenText.set(playText.get())
             } else {
-                playAudioSeventeen(pathName = soundFiles[16])
+                playSound(16,pathName = soundFiles[16])
                 soundSeventeenColor.set(orangeColor.get())
                 soundSeventeenText.set(stopText.get())
             }
@@ -500,12 +732,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[17], button = 17)
         } else {
             //play an audio file
-            if(playerEighteen.isPlaying){
-                stopSoundEighteen()
-                soundEighteenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(17)){
+                stopSound(17)
+                soundEighteenColor.set(emeraldGreen.get())
                 soundEighteenText.set(playText.get())
             } else {
-                playAudioEighteen(pathName = soundFiles[17])
+                playSound(17,pathName = soundFiles[17])
                 soundEighteenColor.set(orangeColor.get())
                 soundEighteenText.set(stopText.get())
             }
@@ -519,12 +751,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[18], button = 18)
         } else {
             //play an audio file
-            if(playerNineteen.isPlaying){
-                stopSoundNineteen()
-                soundNineteenColor.set(emeraldGreenColor.get())
+            if(isStreamActive(18)){
+                stopSound(18)
+                soundNineteenColor.set(emeraldGreen.get())
                 soundNineteenText.set(playText.get())
             } else {
-                playAudioNineteen(pathName = soundFiles[18])
+                playSound(18,pathName = soundFiles[18])
                 soundNineteenColor.set(orangeColor.get())
                 soundNineteenText.set(stopText.get())
             }
@@ -538,12 +770,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             showRecordScreenCountdown(pathName = soundFiles[19], button = 19)
         } else {
             //play an audio file
-            if(playerTwenty.isPlaying){
-                stopSoundTwenty()
-                soundTwentyColor.set(emeraldGreenColor.get())
+            if(isStreamActive(19)){
+                stopSound(19)
+                soundTwentyColor.set(emeraldGreen.get())
                 soundTwentyText.set(playText.get())
             } else {
-                playAudioTwenty(pathName = soundFiles[19])
+                playSound(index = 19, pathName = soundFiles[19])
                 soundTwentyColor.set(orangeColor.get())
                 soundTwentyText.set(stopText.get())
             }
@@ -552,12 +784,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun showRecordScreenCountdown(pathName: String, button:Int){
-        stopAllAudioPlayers()
+//        stopAllAudioPlayers()
         disableAllButtons()
         recordingInProgressVisibility.set(true)
         stopRecordingButtonEnabled.set(false)
         mainLayoutVisibility.set(false)
-        //TODO: Left off here, 1/29/2026
         startCountdownTimer(pathName = pathName, button = button)
 
     }
@@ -572,6 +803,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             override fun onFinish() {
                 recordingInProgressText.set(recordText.get())
                 currentActiveAudioBtn.set(button)
+                stopRecordingButtonText.set(stopRecordingButtonText.get())
                 startRecording(pathName)
             }
         }
@@ -581,6 +813,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     @RequiresApi(Build.VERSION_CODES.S)
     private fun startRecording(pathName: String) {
         stopRecordingButtonEnabled.set(true)
+        stopAllSounds()
         recorder =
             MediaRecorder(getApp()).apply {
                 recorder?.reset()
@@ -593,12 +826,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     prepare()
                 } catch (e: IOException) {
                     Toast.makeText(getApp(), "Prepare failed => ${e.message}", Toast.LENGTH_SHORT).show()
-                    println("Prepare failed => ${e.message}")
                 }
 
                 start()
             }
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun stopRecording() {
+        stopRecordingButtonEnabled.set(false)
+        recordingInProgressVisibility.set(false)
+        mainLayoutVisibility.set(true)
+        recorder?.stop()
+        enableAllButtons()
+        setupSoundPaths()
     }
 
     fun disableAllButtons(){
@@ -647,592 +889,46 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         soundTwentyEnabled.set(true)
     }
 
-    fun stopAllAudioPlayers(){
-        stopSoundOne()
-        stopSoundTwo()
-        stopSoundThree()
-        stopSoundFour()
-        stopSoundFive()
-        stopSoundSix()
-        stopSoundSeven()
-        stopSoundEight()
-        stopSoundNine()
-        stopSoundTen()
-        stopSoundEleven()
-        stopSoundTwelve()
-        stopSoundThirteen()
-        stopSoundFourteen()
-        stopSoundFifteen()
-        stopSoundSixteen()
-        stopSoundSeventeen()
-        stopSoundEighteen()
-        stopSoundNineteen()
-        stopSoundTwenty()
+    private fun playSound(index: Int, pathName: String) {
+        val soundId = loadedSoundMap[index]
 
-        val fileOne = File(soundFiles[0])
-        if(fileOne.exists()){
-            soundOneColor.set(emeraldGreenColor.get())
-            soundOneText.set(playText.get())
-        }else {
-            soundOneColor.set(whiteColor.get())
-            soundOneText.set(recordText.get())
-        }
+        if (soundId != null) {
+            activeStreamMap[index]?.let { soundPool?.stop(it) }
 
-        val fileTwo = File(soundFiles[1])
-        if(fileTwo.exists()){
-            soundTwoColor.set(emeraldGreenColor.get())
-            soundTwoText.set(playText.get())
+            val streamId = soundPool?.play(soundId, 1f, 1f, 1, 0, 1f) ?: 0
+
+            activeStreamMap[index] = streamId
         } else {
-            soundTwoColor.set(whiteColor.get())
-            soundTwoText.set(recordText.get())
-        }
-        val fileThree = File(soundFiles[2])
-        if(fileThree.exists()){
-            soundThreeColor.set(emeraldGreenColor.get())
-            soundThreeText.set(playText.get())
-        } else {
-            soundThreeColor.set(whiteColor.get())
-            soundThreeText.set(recordText.get())
-        }
+            val newSoundId = soundPool?.load(pathName, 1) ?: return
+            loadedSoundMap[index] = newSoundId
 
-        val fileFour = File(soundFiles[3])
-        if(fileFour.exists()){
-            soundFourColor.set(emeraldGreenColor.get())
-            soundFourText.set(playText.get())
-        } else {
-            soundFourColor.set(whiteColor.get())
-            soundFourText.set(recordText.get())
-        }
-        val fileFive = File(soundFiles[4])
-        if(fileFive.exists()){
-            soundFiveColor.set(emeraldGreenColor.get())
-            soundFiveText.set(playText.get())
-        } else {
-            soundFiveColor.set(whiteColor.get())
-            soundFiveText.set(recordText.get())
-        }
-        val fileSix = File(soundFiles[5])
-        if(fileSix.exists()){
-            soundSixColor.set(emeraldGreenColor.get())
-            soundSixText.set(playText.get())
-        } else {
-            soundSixColor.set(whiteColor.get())
-            soundSixText.set(recordText.get())
-        }
-        val fileSeven = File(soundFiles[6])
-        if(fileSeven.exists()){
-            soundSevenColor.set(emeraldGreenColor.get())
-            soundSevenText.set(playText.get())
-        } else {
-            soundSevenColor.set(whiteColor.get())
-            soundSevenText.set(recordText.get())
-        }
-        val fileEight = File(soundFiles[7])
-        if(fileEight.exists()){
-            soundEightColor.set(emeraldGreenColor.get())
-            soundEightText.set(playText.get())
-        } else {
-            soundEightColor.set(whiteColor.get())
-            soundEightText.set(recordText.get())
-        }
-        val fileNine = File(soundFiles[8])
-        if(fileNine.exists()){
-            soundNineColor.set(emeraldGreenColor.get())
-            soundNineText.set(playText.get())
-        } else {
-            soundNineColor.set(whiteColor.get())
-            soundNineText.set(recordText.get())
-        }
-        val fileTen = File(soundFiles[9])
-        if(fileTen.exists()){
-            soundTenColor.set(emeraldGreenColor.get())
-            soundTenText.set(playText.get())
-        } else {
-            soundTenColor.set(whiteColor.get())
-            soundTenText.set(recordText.get())
-        }
-        val fileEleven = File(soundFiles[10])
-        if(fileEleven.exists()){
-            soundElevenColor.set(emeraldGreenColor.get())
-            soundElevenText.set(playText.get())
-        } else {
-            soundElevenColor.set(whiteColor.get())
-            soundElevenText.set(recordText.get())
-        }
-        val fileTwelve = File(soundFiles[11])
-        if(fileTwelve.exists()){
-            soundTwelveColor.set(emeraldGreenColor.get())
-            soundTwelveText.set(playText.get())
-        } else {
-            soundTwelveColor.set(whiteColor.get())
-            soundTwelveText.set(recordText.get())
-        }
-        val fileThirteen = File(soundFiles[12])
-        if(fileThirteen.exists()){
-            soundThirteenColor.set(emeraldGreenColor.get())
-            soundThirteenText.set(playText.get())
-        } else {
-            soundThirteenColor.set(whiteColor.get())
-            soundThirteenText.set(recordText.get())
-        }
-        val fileFourteen = File(soundFiles[13])
-        if(fileFourteen.exists()){
-            soundFourteenColor.set(emeraldGreenColor.get())
-            soundFourteenText.set(playText.get())
-        } else {
-            soundFourteenColor.set(whiteColor.get())
-            soundFourteenText.set(recordText.get())
-        }
-        val fileFifteen = File(soundFiles[14])
-        if(fileFifteen.exists()){
-            soundFifteenColor.set(emeraldGreenColor.get())
-            soundFifteenText.set(playText.get())
-        } else {
-            soundFifteenColor.set(whiteColor.get())
-            soundFifteenText.set(recordText.get())
-        }
-        val fileSixteen = File(soundFiles[15])
-        if(fileSixteen.exists()){
-            soundSixteenColor.set(emeraldGreenColor.get())
-            soundSixteenText.set(playText.get())
-        } else {
-            soundSixteenColor.set(whiteColor.get())
-            soundSixteenText.set(recordText.get())
-        }
-        val fileSeventeen = File(soundFiles[16])
-        if(fileSeventeen.exists()){
-            soundSeventeenColor.set(emeraldGreenColor.get())
-            soundSeventeenText.set(playText.get())
-        } else {
-            soundSeventeenColor.set(whiteColor.get())
-            soundSeventeenText.set(recordText.get())
-        }
-        val fileEighteen = File(soundFiles[17])
-        if(fileEighteen.exists()){
-            soundEighteenColor.set(emeraldGreenColor.get())
-            soundEighteenText.set(playText.get())
-        } else {
-            soundEighteenColor.set(whiteColor.get())
-            soundEighteenText.set(recordText.get())
-        }
-        val fileNineteen = File(soundFiles[18])
-        if(fileNineteen.exists()){
-            soundNineteenColor.set(emeraldGreenColor.get())
-            soundNineteenText.set(playText.get())
-        } else {
-            soundNineteenColor.set(whiteColor.get())
-            soundNineteenText.set(recordText.get())
-        }
-        val fileTwenty = File(soundFiles[19])
-        if(fileTwenty.exists()){
-            soundTwentyColor.set(emeraldGreenColor.get())
-            soundTwentyText.set(playText.get())
-        } else {
-            soundTwentyColor.set(whiteColor.get())
-            soundTwentyText.set(recordText.get())
-        }
-    }
-
-    fun stopSoundOne(){
-        playerOne.stop()
-    }
-    fun stopSoundTwo(){
-        playerTwo.stop()
-    }
-    fun stopSoundThree(){
-        playerThree.stop()
-    }
-    fun stopSoundFour(){
-        playerFour.stop()
-    }
-    fun stopSoundFive(){
-        playerFive.stop()
-    }
-    fun stopSoundSix(){
-        playerSix.stop()
-    }
-    fun stopSoundSeven(){
-        playerSeven.stop()
-    }
-    fun stopSoundEight(){
-        playerEight.stop()
-    }
-    fun stopSoundNine(){
-        playerNine.stop()
-    }
-    fun stopSoundTen(){
-        playerTen.stop()
-    }
-    fun stopSoundEleven(){
-        playerEleven.stop()
-    }
-    fun stopSoundTwelve(){
-        playerTwelve.stop()
-    }
-    fun stopSoundThirteen(){
-        playerThirteen.stop()
-    }
-    fun stopSoundFourteen(){
-        playerFourteen.stop()
-    }
-    fun stopSoundFifteen(){
-        playerFifteen.stop()
-    }
-    fun stopSoundSixteen(){
-        playerSixteen.stop()
-    }
-    fun stopSoundSeventeen(){
-        playerSeventeen.stop()
-    }
-    fun stopSoundEighteen(){
-        playerEighteen.stop()
-    }
-    fun stopSoundNineteen(){
-        playerNineteen.stop()
-    }
-    fun stopSoundTwenty(){
-        playerTwenty.stop()
-    }
-
-
-    fun playAudioOne(pathName: String) {
-        playerOne.reset()
-        playerOne.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
+            soundPool?.setOnLoadCompleteListener { pool, id, status ->
+                if (status == 0 && id == newSoundId) {
+                    val streamId = pool.play(id, 1f, 1f, 1, -1, 1f)
+                    activeStreamMap[index] = streamId
+                }
             }
         }
-
-        playerOne.start()
-        playerOne.isLooping = true
-
     }
-    fun playAudioTwo(pathName: String) {
-        playerTwo.reset()
-        playerTwo.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
 
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
+    fun stopSound(index: Int) {
+        activeStreamMap[index]?.let { streamId ->
+            soundPool?.stop(streamId)
+            activeStreamMap.remove(index)
         }
-
-        playerTwo.start()
-        playerTwo.isLooping = true
-
     }
-    fun playAudioThree(pathName: String) {
-        playerThree.reset()
-        playerThree.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
 
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
+    fun stopAllSounds(){
+        for (streamId in activeStreamMap.values) {
+            soundPool?.stop(streamId)
         }
-
-        playerThree.start()
-        playerThree.isLooping = true
-
-    }
-    fun playAudioFour(pathName: String) {
-        playerFour.reset()
-        playerFour.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerFour.start()
-        playerFour.isLooping = true
-
     }
 
-    fun playAudioFive(pathName: String) {
-        playerFive.reset()
-        playerFive.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerFive.start()
-        playerFive.isLooping = true
-
+    fun isStreamActive(index: Int): Boolean {
+        return activeStreamMap.containsKey(index)
     }
 
-    fun playAudioSix(pathName: String) {
-        playerSix.reset()
-        playerSix.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerSix.start()
-        playerSix.isLooping = true
-
-    }
-
-    fun playAudioSeven(pathName: String) {
-        playerSeven.reset()
-        playerSeven.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerSeven.start()
-        playerSeven.isLooping = true
-
-    }
-
-    fun playAudioEight(pathName: String) {
-        playerEight.reset()
-        playerEight.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerEight.start()
-        playerEight.isLooping = true
-
-    }
-
-    fun playAudioNine(pathName: String) {
-        playerNine.reset()
-        playerNine.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerNine.start()
-        playerNine.isLooping = true
-
-    }
-
-    fun playAudioTen(pathName: String) {
-        playerTen.reset()
-        playerTen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerTen.start()
-        playerTen.isLooping = true
-
-    }
-
-    fun playAudioEleven(pathName: String) {
-        playerEleven.reset()
-        playerEleven.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerEleven.start()
-        playerEleven.isLooping = true
-
-    }
-
-    fun playAudioTwelve(pathName: String) {
-        playerTwelve.reset()
-        playerTwelve.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerTwelve.start()
-        playerTwelve.isLooping = true
-
-    }
-
-    fun playAudioThirteen(pathName: String) {
-        playerThirteen.reset()
-        playerThirteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerThirteen.start()
-        playerThirteen.isLooping = true
-
-    }
-
-    fun playAudioFourteen(pathName: String) {
-        playerFourteen.reset()
-        playerFourteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerFourteen.start()
-        playerFourteen.isLooping = true
-
-    }
-
-    fun playAudioFifteen(pathName: String) {
-        playerFifteen.reset()
-        playerFifteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerFifteen.start()
-        playerFifteen.isLooping = true
-
-    }
-
-    fun playAudioSixteen(pathName: String) {
-        playerSixteen.reset()
-        playerSixteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerSixteen.start()
-        playerSixteen.isLooping = true
-
-    }
-
-    fun playAudioSeventeen(pathName: String) {
-        playerSeventeen.reset()
-        playerSeventeen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerSeventeen.start()
-        playerSeventeen.isLooping = true
-
-    }
-
-    fun playAudioEighteen(pathName: String) {
-        playerEighteen.reset()
-        playerEighteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerEighteen.start()
-        playerEighteen.isLooping = true
-
-    }
-
-    fun playAudioNineteen(pathName: String) {
-        playerNineteen.reset()
-        playerNineteen.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerNineteen.start()
-        playerNineteen.isLooping = true
-
-    }
-
-    fun playAudioTwenty(pathName: String) {
-        playerTwenty.reset()
-        playerTwenty.apply {
-            try {
-                setDataSource(pathName)
-                prepare()
-
-            } catch (_: IOException) {
-                Toast.makeText(getApp(), "Could not load audio name $pathName", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        playerTwenty.start()
-        playerTwenty.isLooping = true
-
-    }
-
-    private fun deleteAudio(pathName: String){
+    fun deleteAudioFile(pathName: String){
         val file = File(pathName)
         if(file.exists()){
             file.delete()
@@ -1240,6 +936,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             Toast.makeText(getApp(), "Could not delete $pathName", Toast.LENGTH_SHORT).show()
         }
     }
+    fun deleteAllAudioFiles(){
+        for(value in soundFiles){
+            val file = File(value)
+            if(file.exists()){
+                file.delete()
+            } else {
+                Toast.makeText(getApp(), "Could not delete $value", Toast.LENGTH_SHORT).show()
+            }
+        }
 
-
+    }
 }
