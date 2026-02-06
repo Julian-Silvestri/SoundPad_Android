@@ -133,8 +133,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val activeStreamMap = mutableMapOf<Int, Int>()
     private val loadedSoundMap = mutableMapOf<Int, Int>()
-    private var soundPool: SoundPool? =
-
+    private var soundPool: SoundPool? = null
     init {
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_GAME)
